@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="JDK 源码学习笔记 1"><meta name="keywords" content="Java,JDK"><meta name="author" content="Shuchen"><meta name="copyright" content="Shuchen"><title>JDK 源码学习笔记 1 | Shuchen's blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.8.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.8.2"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  hexoVersion: '5.1.0'
+} </script><meta name="generator" content="Hexo 5.1.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAJava%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E9%A1%B9%E7%9B%AE"><span class="toc-number">2.</span> <span class="toc-text">创建Java源码学习项目</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9B%B4%E6%8D%A2%E6%BA%90%E7%A0%81%E8%B7%AF%E5%BE%84"><span class="toc-number">3.</span> <span class="toc-text">更换源码路径</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91"><span class="toc-number">4.</span> <span class="toc-text">遇到的坑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E9%A1%BA%E5%BA%8F"><span class="toc-number">5.</span> <span class="toc-text">源码学习顺序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%95%E7%94%A8"><span class="toc-number">6.</span> <span class="toc-text">引用</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Shuchen</div><div class="author-info__description text-center">The place to share tech and life</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">20</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">9</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Shuchen's blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">JDK 源码学习笔记 1</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-25</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>从本文开始对JDK源码进行学习，内容包含Java中各种常见数据结构的底层实现原理和其他重要的Java函数的底层实现。本文包括JDK源码阅读环境搭建</p>
+<a id="more"></a>
+
+<h1 id="创建Java源码学习项目"><a href="#创建Java源码学习项目" class="headerlink" title="创建Java源码学习项目"></a>创建Java源码学习项目</h1><ol>
+<li>在idea中创建一个新的Java项目，起名为JavaSourceCodeLearn</li>
+<li>在setting中将如下选项取消勾选，否则逐步调试时无法进入底层类</li>
+</ol>
+
+
+<h1 id="更换源码路径"><a href="#更换源码路径" class="headerlink" title="更换源码路径"></a>更换源码路径</h1><ol>
+<li>在JDK保存的文件家中有src的压缩包（JDK8以前在JDK文件夹下，之后则在lib文件夹下）</li>
+<li>将该src解压到某个文件夹内，记住这个路径</li>
+<li>在项目的SDKs选项内将Sourcepath内的所有源替换为上一步创建的文件夹（这样做的目的是让我们能够给源码添加自己的注释）</li>
+</ol>
+
+
+<h1 id="遇到的坑"><a href="#遇到的坑" class="headerlink" title="遇到的坑"></a>遇到的坑</h1><p>不要把复制的源码放在项目路径下，否则会引起错误</p>
+<h1 id="源码学习顺序"><a href="#源码学习顺序" class="headerlink" title="源码学习顺序"></a>源码学习顺序</h1><p>重要的部分都在java.base-&gt;java文件夹内</p>
+<p>1、java.lang</p>
+<ol>
+<li>Object 1</li>
+<li>String 1</li>
+<li>AbstractStringBuilder 1</li>
+<li>StringBuffer 1</li>
+<li>StringBuilder 1</li>
+<li>Boolean 2</li>
+<li>Byte 2</li>
+<li>Double 2</li>
+<li>Float 2</li>
+<li>Integer 2</li>
+<li>Long 2</li>
+<li>Short 2</li>
+<li>Thread 2</li>
+<li>ThreadLocal 2</li>
+<li>Enum 3</li>
+<li>Throwable 3</li>
+<li>Error 3</li>
+<li>Exception 3</li>
+<li>Class 4</li>
+<li>ClassLoader 4</li>
+<li>Compiler 4</li>
+<li>System 4</li>
+<li>Package 4</li>
+<li>Void 4</li>
+</ol>
+<p>2、java.util</p>
+<ol>
+<li>AbstractList 1</li>
+<li>AbstractMap 1</li>
+<li>AbstractSet 1</li>
+<li>ArrayList 1</li>
+<li>LinkedList 1</li>
+<li>HashMap 1</li>
+<li>Hashtable 1</li>
+<li>HashSet 1</li>
+<li>LinkedHashMap 1</li>
+<li>LinkedHashSet 1</li>
+<li>TreeMap 1</li>
+<li>TreeSet 1</li>
+<li>Vector 2</li>
+<li>Queue 2</li>
+<li>Stack 2</li>
+<li>SortedMap 2</li>
+<li>SortedSet 2</li>
+<li>Collections 3</li>
+<li>Arrays 3</li>
+<li>Comparator 3</li>
+<li>Iterator 3</li>
+<li>Base64 4</li>
+<li>Date 4</li>
+<li>EventListener 4</li>
+<li>Random 4</li>
+<li>SubList 4</li>
+<li>Timer 4</li>
+<li>UUID 4</li>
+<li>WeakHashMap 4</li>
+</ol>
+<p>3、java.util.concurrent</p>
+<ol>
+<li>ConcurrentHashMap 1</li>
+<li>Executor 2</li>
+<li>AbstractExecutorService 2</li>
+<li>ExecutorService 2</li>
+<li>ThreadPoolExecutor 2</li>
+<li>BlockingQueue 2<br>7）AbstractQueuedSynchronizer 2<br>8）CountDownLatch 2</li>
+<li>FutureTask 2<br>10）Semaphore 2<br>11）CyclicBarrier 2<br>13）CopyOnWriteArrayList 3<br>14）SynchronousQueue 3<br>15）BlockingDeque 3</li>
+<li>Callable 4</li>
+</ol>
+<p>4、java.util.concurrent.atomic</p>
+<ol>
+<li>AtomicBoolean 2</li>
+<li>AtomicInteger 2</li>
+<li>AtomicLong 2</li>
+<li>AtomicReference 3</li>
+</ol>
+<p>5、java.lang.reflect</p>
+<ol>
+<li>Field 2</li>
+<li>Method 2</li>
+</ol>
+<p>6、java.lang.annotation</p>
+<ol>
+<li>Annotation 3</li>
+<li>Target 3</li>
+<li>Inherited 3</li>
+<li>Retention 3</li>
+<li>Documented 4</li>
+<li>ElementType 4</li>
+<li>Native 4</li>
+<li>Repeatable 4</li>
+</ol>
+<p>7、java.util.concurrent.locks</p>
+<ol>
+<li>Lock 2</li>
+<li>Condition 2</li>
+<li>ReentrantLock 2</li>
+<li>ReentrantReadWriteLock 2</li>
+</ol>
+<p>8、java.io</p>
+<ol>
+<li>File 3</li>
+<li>InputStream   3</li>
+<li>OutputStream  3</li>
+<li>Reader  4</li>
+<li>Writer  4</li>
+</ol>
+<p>9、java.nio</p>
+<ol>
+<li>Buffer 3</li>
+<li>ByteBuffer 4</li>
+<li>CharBuffer 4</li>
+<li>DoubleBuffer 4</li>
+<li>FloatBuffer 4</li>
+<li>IntBuffer 4</li>
+<li>LongBuffer 4</li>
+<li>ShortBuffer 4</li>
+</ol>
+<p>10、java.sql</p>
+<ol>
+<li>Connection 3</li>
+<li>Driver 3</li>
+<li>DriverManager 3</li>
+<li>JDBCType 3</li>
+<li>ResultSet 4</li>
+<li>Statement 4</li>
+</ol>
+<p>11、java.net</p>
+<ol>
+<li>Socket 3</li>
+<li>ServerSocket 3</li>
+<li>URI 4</li>
+<li>URL 4</li>
+<li>URLEncoder 4</li>
+</ol>
+<p>阅读笔记简版<br>1、ArrayList</p>
+<p>1）Object[] elementData：数据存储<br>2）int size：使用数量<br>3）int modCount：操作次数<br>4）初始化：<br>  a、指定容量初始化数组；<br>  b、不指定容量第一次add数据时初始化数组容量10<br>5）扩容：<br>  a、1.5倍；<br>  b、不够取所需最小；<br>  c、新容量大于MAX_ARRAY_SIZE（Integer.MAX_VALUE-8）,按所需容量取MAX_ARRAY_SIZE和Integer.MAX_VALUE较小值</p>
+<p>2、LinkedList</p>
+<ol>
+<li>Node {E item, Node prev, Node next}</li>
+<li>int size</li>
+<li>Node first</li>
+<li>Node last</li>
+<li>linkFirst(), linkLast(), linkBefore(), unLinkFirst(), unLinkLast(), unLink(), indexOf()<br>6）int modCount</li>
+</ol>
+<p>3、HashMap</p>
+<ol>
+<li>Node{int hash, K key, V value, Node next}<br>注：hash是根据key算的</li>
+<li>Node[] table：数据存储，默认大小16</li>
+<li>Set&lt;Map.Entry&gt; entrySet：用于Map遍历的集合</li>
+<li>int size：当前数量</li>
+<li>int threshold：size超过多少时需要扩容，默认16</li>
+<li>float loadFactor：负载因子，默认0.75f<br>7）int modCount：操作次数</li>
+<li>put():根据key算hash，根据容量和hash算index，table[index]没有直接添加到数组中，table[index]有，若index位置同一个key则更新，否则遍历next是否有，有则更新，无则新增<br>注：判断key是否相等，先比较hash，若相等在比较equals<br>9）扩容：put后，当size&gt;threshold时需要扩容，扩容时容量翻倍，重新算hash复制到新数组<br>10）哈希冲突：1.7以前数组+链表，1.8开始数组+红黑树<br>11）get()类似</li>
+</ol>
+<p>4、ConcurrentHashMap</p>
+<ol>
+<li>JDK1.7及以前：<br> a、Segment[] ,HashEntry[] , HashEntry{hash, k, v, next}<br> b、根据key算hash，根据hash和Segment的大小算位置，每个segment拥有一个自己的HashEntry[]<br> c、get()：不加锁，volatile类型<br> d、put(): 对相应segment加锁<br> e、size()：各HashEntry[] 之和，先不加锁算两遍，若一致则返回，若不一致则加锁重新计算<br>2）JDK1.8<br> a、Node{hash, key, value, next}<br> b、Node[] table<br> c、大多数操作类似于HashMap，根据key算hash，在根据hash和容量算index，对table[index]加锁，从而达到更大的并发量<br> d、get(): 同HashMap<br> e、put(): 对table[index]加锁，如果table[index]为null则使用CAS操作，如果不为null对table[index]加synchronized</li>
+</ol>
+<p>5、Hashtable</p>
+<ol>
+<li>结构实现与HashMap基本一致</li>
+<li>通过synchronized方法保证线程安全</li>
+</ol>
+<p>6、LinkedHashMap</p>
+<p>1）继承HashMap<br>2) Entry{HashMap.Node, Entry before, after}<br>3) Entry head, tail<br>4) 重写newNode()添加节点时，除像HashMap中添加外，保存before、after信息</p>
+<p>7、TreeMap</p>
+<p>1）红黑树，即自平衡二叉查找树，时间复杂度O(logn)<br>2）Entry{K k, V v, Entry parent, left, right, boolean color}<br>3）Entry root，int size， int modeCount</p>
+<p>8、Object</p>
+<ol>
+<li>wait(), notify(), notifyAll(), wait(timeout)</li>
+<li>hashCode(), equals()</li>
+<li>clone()</li>
+</ol>
+<p>9、String</p>
+<ol>
+<li>final char[] value</li>
+<li>int hash</li>
+<li>equals(), startWith(), endWith(), replace</li>
+</ol>
+<p>10、AbstractStringBuilder</p>
+<ol>
+<li>char[] value</li>
+<li>int count</li>
+<li>扩容：翻倍，不够取所需最小</li>
+</ol>
+<p>11、StringBuilder：继承AbstractStringBuilder<br>12、StringBuffer</p>
+<ol>
+<li>继承AbstractStringBuilder</li>
+<li>synchronized方法保证线程安全</li>
+<li>char[] toStringCache</li>
+</ol>
+<p>13、Set一般都是使用委托模式到Map<br>14、AbstractMap维护EntrySet，AbstractSet维护Iterator，AbstractList维护Iterator</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_21033663/article/details/79571506">https://blog.csdn.net/qq_21033663/article/details/79571506</a></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Shuchen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yoursite.com/2020/03/25/JDK-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/">http://yoursite.com/2020/03/25/JDK-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a><a class="post-meta__tags" href="/tags/JDK/">JDK</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/05/30/dubbo-%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B02/"><i class="fa fa-chevron-left">  </i><span>Dubbo 入门笔记2</span></a></div><div class="next-post pull-right"><a href="/2020/02/19/dubbo-%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B01/"><span>Dubbo 入门笔记1</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By Shuchen</div><div class="framework-info"><span>Driven - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.8.2"></script><script src="/js/fancybox.js?version=1.8.2"></script><script src="/js/sidebar.js?version=1.8.2"></script><script src="/js/copy.js?version=1.8.2"></script><script src="/js/fireworks.js?version=1.8.2"></script><script src="/js/transition.js?version=1.8.2"></script><script src="/js/scroll.js?version=1.8.2"></script><script src="/js/head.js?version=1.8.2"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

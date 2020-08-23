@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="MySQL笔记之三事务的隔离级别"><meta name="keywords" content="MySQL"><meta name="author" content="Shuchen"><meta name="copyright" content="Shuchen"><title>MySQL笔记之三事务的隔离级别 | Shuchen's blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.8.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.8.2"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  hexoVersion: '5.1.0'
+} </script><meta name="generator" content="Hexo 5.1.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E5%AE%9A%E4%B9%89"><span class="toc-number">2.</span> <span class="toc-text">事务定义</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">事务的隔离级别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL-%E9%94%81"><span class="toc-number">4.</span> <span class="toc-text">MySQL 锁</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Shuchen</div><div class="author-info__description text-center">The place to share tech and life</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">20</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">9</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Shuchen's blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">MySQL笔记之三事务的隔离级别</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-12-20</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文记录MySQL事务隔离级别的相关知识，包括四种隔离级别，默认级别，不同存储引擎采用的锁。</p>
+<!-------------------more---------------->
+
+<h1 id="事务定义"><a href="#事务定义" class="headerlink" title="事务定义"></a>事务定义</h1><p>事务是由一组sql语句组成的逻辑处理单元，具有ACID的属性</p>
+<ul>
+<li>Atomicity（原子性）：一個事务（transaction）中的所有操作，或者全部完成，或者全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9B%9E%E6%BB%9A_(%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86)">回滚</a>（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。即，事务不可分割、不可约简。</li>
+<li>Consistency（一致性）：在事务开始之前和事务结束以后，数据库的完整性没有被破坏。这表示写入的资料必须完全符合所有的预设<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7">约束</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A7%A6%E5%8F%91%E5%99%A8_(%E6%95%B0%E6%8D%AE%E5%BA%93)">触发器</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%BA%A7%E8%81%94%E5%9B%9E%E6%BB%9A">级联回滚</a>等。</li>
+<li>Isolation（隔离性）：数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括未提交读（Read uncommitted）、提交读（read committed）、可重复读（repeatable read）和串行化（Serializable）。</li>
+<li>Durability（持久性）：事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。</li>
+</ul>
+<h1 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h1><p>事务a和事务b之间有一定的隔离性</p>
+<p>隔离性有隔离级别（4个）：</p>
+<ol>
+<li>读未提交 read uncommitted</li>
+<li>读已提交 read committed</li>
+<li>可重复读 repeatable</li>
+<li>串行化 serializable</li>
+</ol>
+<p>隔离级别递增</p>
+<p>read uncommitted 最低级别的隔离，a事务未提交的数据事务b可以读取到（脏读），一般理论存在</p>
+<p>数据库默认的隔离级别一般高于此。读取的是内存里的数据</p>
+<p>read committed 事务a提交的数据事务b才能读取到，可避免脏读，但是导致不可重复读取（事务b每次读取事务a的数据都不同，因为a提交了新的数据）不符合隔离性，读取的是硬盘里的数据。oracle默认的隔离级别。</p>
+<p>repeatable：可重复读取，事务a提交了，事务b仍然读取不到。事务b可重复读取数据（每次拿到的都是事务a提交前的数据），b读取的是内存里自己存的a的数据。<strong>MySQL默认的隔离级别</strong>。会导致幻象读（事务结束后再次读取会有很大差异）</p>
+<p>MVCC（多版本并发控制）机制：可重复读的隔离级别下使用了MVCC机制，select不会更新版本号，是快照读（自己内存里的数据），但所有更新操作会更新版本号，是当前读。</p>
+<p>serializable：事务a在操作表中数据的时候，事务b只能等待。很少使用，吞吐量太低。</p>
+<p>解决幻读问题：java代码同步并发、mysql间隙锁：通过where条件给表中的多条数据添加行锁，即使这条数据还不存在，也会加锁，这样操作，则其他session不能更新这几条数据，当前session读取出的数据一定是真实的。</p>
+<h1 id="MySQL-锁"><a href="#MySQL-锁" class="headerlink" title="MySQL 锁"></a>MySQL 锁</h1><p>乐观锁：用版本对比实现数据更新，如果一个线程更新一个数据时发现此时的版本和自己查询到的版本不同（即该数据已经被其他线程更新过了）则更新失败。线程更新数据成功会增加数据的版本。</p>
+<p>悲观锁：只允许一个线程访问数据。</p>
+<p>表锁（对一张表加锁，分读和写锁，偏读）：</p>
+<p><strong>MYISAM采用表锁，不支持事务</strong></p>
+<p>加读锁：当前session和其他session都可以读这张表，当前session中插入或更新表会报错，其他session更新数据会被阻塞。（即不让任何session在当前session读取完表之前更改）</p>
+<p>加写锁：当前session可进行任何操作，其他session全部阻塞。（即当前session更新完毕前不让任何其他session访问该表）</p>
+<p>MYISAM 会在执行select时给对应表加读锁，在更改前加写锁。</p>
+<p>行锁（对一行数据加锁，偏写）：</p>
+<p><strong>InnoDB采用行锁，支持事务。</strong></p>
+<p>在当前session更新一行数据，如果没有提交，则此时其他session不能更新这条数据，会阻塞。只有这个session的事务commit之后，才能更新。</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Shuchen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yoursite.com/2019/12/20/MySQL%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%B8%89%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">http://yoursite.com/2019/12/20/MySQL%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%B8%89%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/02/19/dubbo-%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B01/"><i class="fa fa-chevron-left">  </i><span>Dubbo 入门笔记1</span></a></div><div class="next-post pull-right"><a href="/2019/12/20/MySQL%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E7%B4%A2%E5%BC%95%E5%BB%BA%E7%AB%8B%E5%92%8C%E4%BC%98%E5%8C%96/"><span>MySQL笔记之二索引建立和优化</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By Shuchen</div><div class="framework-info"><span>Driven - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.8.2"></script><script src="/js/fancybox.js?version=1.8.2"></script><script src="/js/sidebar.js?version=1.8.2"></script><script src="/js/copy.js?version=1.8.2"></script><script src="/js/fireworks.js?version=1.8.2"></script><script src="/js/transition.js?version=1.8.2"></script><script src="/js/scroll.js?version=1.8.2"></script><script src="/js/head.js?version=1.8.2"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="MySQL笔记之一 存储结构，存储引擎"><meta name="keywords" content="MySQL"><meta name="author" content="Shuchen"><meta name="copyright" content="Shuchen"><title>MySQL笔记之一 存储结构，存储引擎 | Shuchen's blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.8.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.8.2"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  hexoVersion: '5.1.0'
+} </script><meta name="generator" content="Hexo 5.1.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">MySQL存储结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="toc-number">2.1.</span> <span class="toc-text">哈希表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="toc-number">2.2.</span> <span class="toc-text">二叉树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B%E6%A0%91"><span class="toc-number">2.3.</span> <span class="toc-text">B树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-%E6%A0%91"><span class="toc-number">2.4.</span> <span class="toc-text">B+树</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL-%E7%9A%84%E6%90%9C%E7%B4%A0%E5%BC%95%E6%93%8E"><span class="toc-number">3.</span> <span class="toc-text">MySQL 的搜素引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MYISAM"><span class="toc-number">3.1.</span> <span class="toc-text">MYISAM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB"><span class="toc-number">3.2.</span> <span class="toc-text">InnoDB</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Shuchen</div><div class="author-info__description text-center">The place to share tech and life</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">20</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">9</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Shuchen's blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">MySQL笔记之一 存储结构，存储引擎</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-12-18</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文记录MySQL底层的存储数据结构和存储引擎。</p>
+<!--------------more---------------->
+
+<h1 id="MySQL存储结构"><a href="#MySQL存储结构" class="headerlink" title="MySQL存储结构"></a>MySQL存储结构</h1><p>从需求的角度出发来考虑可以用的数据结构。对于数据库来说，最重要的功能就是要快速找到需要的数据。因此，线性的存储结构比如数组，链表等都不做考虑，用遍历的方式找到数据太过缓慢。可用的数据结构有哈希表，搜索二叉树，红黑树，b树，b+树等。下面逐一分析优劣来理解为什么MySQL选择了b+树作为存储结构。</p>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><p>哈希表的特点是能够在O(1)的时间复杂度内找到所需的元素。其原理是将键值对的键利用哈希函数转换，变成等长的形式，之后存在相应的内存地址上，之后查询的时候就对键做同样操作，然后去内存上找到对应位置即可。</p>
+<p>优点：查找快速</p>
+<p>缺点：</p>
+<ol>
+<li>数据量过大时哈希冲突会很多，此时每个地址下存入的都是一个红黑树，查找也会变慢。</li>
+<li>只能做精确查找，无法完成范围查找</li>
+</ol>
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><p>搜索二叉树是一种特殊的二叉树，对每一个节点，若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值； 若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值； 它的左、右子树也分别为二叉排序树。</p>
+<p>优点：可以做范围查找，查询速度为O(logn)</p>
+<p>缺点：</p>
+<ol>
+<li>如果维护的字段是递增的，则生成的二叉树很不平衡（只有右子），此时查找仍是O(n)</li>
+<li>大量数据会造成深度过深，此时搜索仍旧很慢</li>
+</ol>
+<p>对于第一点的优化可以使用红黑树，但仍旧无法解决第二个缺点</p>
+<h2 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h2><p>B树是一种平衡树，即每个叶结点的深度相同，以此来防止非平衡树带来的查询复杂度不同的问题，同时每个节点可以存储多个数据，解决深度过深的问题。具体定义以下概念：</p>
+<ol>
+<li>度：指节点存储的数据个数</li>
+<li>阶：指节点最多能存储的数据个数</li>
+</ol>
+<p>对于一颗m阶的B树，其满足：</p>
+<ol>
+<li>每个结点最多有m-1个关键字。</li>
+<li>根结点最少可以只有1个关键字。</li>
+<li>非根结点至少有Math.ceil(m/2)-1个关键字。</li>
+<li>每个结点中的关键字都按照从小到大的顺序排列，每个关键字的左子树中的所有关键字都小于它，而右子树中的所有关键字都大于它。</li>
+<li>所有叶子结点都位于同一层，或者说根结点到每个叶子结点的长度都相同。</li>
+</ol>
+
+
+<p>具体的插入删除操作参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/nullzx/p/8729425.html">https://www.cnblogs.com/nullzx/p/8729425.html</a></p>
+<p>具体的动画演示：<a target="_blank" rel="noopener" href="https://www.cs.usfca.edu/~galles/visualization/BTree.html">https://www.cs.usfca.edu/~galles/visualization/BTree.html</a></p>
+<p>优点：解决了大量数据的存储和查询问题</p>
+<p>缺点：每个节点能够存储的元素有限。MySQL需要将节点读入内存来进行查找工作，由于每个节点包含关键字（key）和所有值（value），因此内存限制了一次无法读入很多节点，降低搜索效率。</p>
+<h2 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h2><p>和B树类似，有两点不同</p>
+<ol>
+<li>所有的值都存在叶子节点，非叶子节点只存储关键字</li>
+<li>叶子节点之间用指针连接，方便范围查找</li>
+</ol>
+<p>m阶B+树表示了内部结点最多有m-1个关键字（或者说内部结点最多有m个子树），阶数m同时限制了叶子结点最多存储m-1个记录。</p>
+<p>内部结点中的key都按照从小到大的顺序排列，对于内部结点中的一个key，左树中的所有key都<strong>小于</strong>它，右子树中的key都<strong>大于等于</strong>它。叶子结点中的记录也按照key的大小排列。</p>
+
+
+<p>动画演示：<a target="_blank" rel="noopener" href="https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html">https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html</a></p>
+<p>优点：满足大量数据快速查询，由于非叶子节点只存索引，可以一次尽可能多的加载索引进入内存，加快查找。同时叶子节点之间的指针加快范围查找。</p>
+<p>mysql底层bigint类的索引占8字节，指针占6字节，默认每个索引字段的大小为16kb（每个节点就是一个索引字段），由此得出，每个索引字段可以存大概1000个元素（索引）</p>
+<h1 id="MySQL-的搜素引擎"><a href="#MySQL-的搜素引擎" class="headerlink" title="MySQL 的搜素引擎"></a>MySQL 的搜素引擎</h1><p>先明确一点，MySQL的存储引擎是用来<strong>形容表的，不是数据库</strong>。它决定了一张表是如何存储在硬盘上的。</p>
+<p>常见的存储引擎有MYISAM和InnoDB。</p>
+<h2 id="MYISAM"><a href="#MYISAM" class="headerlink" title="MYISAM"></a>MYISAM</h2><p>对于每张表，MYISAM有三个文件：.MYD , .MYI, .frm</p>
+<p>frm 是表结构定义的文件</p>
+<p>MYD是数据的存储</p>
+<p>MYI是索引的存储，主键是自带索引的。</p>
+
+
+<p>拿到需要的索引，进入MYI文件通过b+树定位，找到对应的指针（myiSAM），在用这个指针去MYD文件里定位到对应的位置。</p>
+<p>是非聚集索引（数据和索引分开存储）</p>
+<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>INNODB的存储只有两个文件.frm和.ibd</p>
+<p>其中ibd保存索引和数据，不用指针来定位，直接把索引和数据存在一起</p>
+
+
+<p>表数据本身就是按照b+树结构来存储的</p>
+<p><strong>聚集索引：叶子节点包含了完整的数据记录</strong></p>
+<p>innoDB必须要建立主键来组织b+树，并且推荐用自增整形来做主键，因为1.节约存储空间2.搜素过程需要比大小</p>
+<p>3.自增是因为b+树必须维护元素有序，当插入的元素不是结尾元素时，b+树已经生成的结构可能需要重构（之前的一个索引字段已经满了，又要插入一个，则这个字段必须分裂）</p>
+<p>叶子节点之间的指针（双向指针）：用来进行范围查找，找到边界的节点，之后利用这个指针找到左右需要的范围</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Shuchen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yoursite.com/2019/12/18/MySQL%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%B8%80-%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%EF%BC%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/">http://yoursite.com/2019/12/18/MySQL%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%B8%80-%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%EF%BC%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/12/20/MySQL%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E7%B4%A2%E5%BC%95%E5%BB%BA%E7%AB%8B%E5%92%8C%E4%BC%98%E5%8C%96/"><i class="fa fa-chevron-left">  </i><span>MySQL笔记之二索引建立和优化</span></a></div><div class="next-post pull-right"><a href="/2019/08/31/Manacher/"><span>Manacher</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By Shuchen</div><div class="framework-info"><span>Driven - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.8.2"></script><script src="/js/fancybox.js?version=1.8.2"></script><script src="/js/sidebar.js?version=1.8.2"></script><script src="/js/copy.js?version=1.8.2"></script><script src="/js/fireworks.js?version=1.8.2"></script><script src="/js/transition.js?version=1.8.2"></script><script src="/js/scroll.js?version=1.8.2"></script><script src="/js/head.js?version=1.8.2"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
