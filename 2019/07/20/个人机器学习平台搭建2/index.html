@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.1.1" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.1.1" type="image/png" sizes="32x32"><meta name="description" content="前言       本文记录Ubuntu系统下机器学习相关环境的安装和配置                      安装 CUDA       首先在这个网站查看tensorflow，cuda，python的版本对应关系，选择合适的版本。https:&#x2F;&#x2F;www.tensorflow.org&#x2F;install&#x2F;source#tested_source_confi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="个人机器学习平台搭建2">
+<meta property="og:url" content="http://yoursite.com/2019/07/20/%E4%B8%AA%E4%BA%BA%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前言       本文记录Ubuntu系统下机器学习相关环境的安装和配置                      安装 CUDA       首先在这个网站查看tensorflow，cuda，python的版本对应关系，选择合适的版本。https:&#x2F;&#x2F;www.tensorflow.org&#x2F;install&#x2F;source#tested_source_confi">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-07-20T04:12:48.000Z">
+<meta property="article:modified_time" content="2019-12-15T19:27:19.408Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary"><title>个人机器学习平台搭建2 | Hexo</title><link ref="canonical" href="http://yoursite.com/2019/07/20/%E4%B8%AA%E4%BA%BA%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA2/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.1.1"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":true,"scrollDownIcon":false},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"Copy","copySuccess":"Copy Success","copyError":"Copy Error"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.1.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">Home</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">Archives</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">Hexo</div><div class="header-banner-info__subtitle"></div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">个人机器学习平台搭建2</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">Created</span><span class="post-meta-item__value">2019-07-20</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">Updated</span><span class="post-meta-item__value">2019-12-16</span></span></div></header><div class="post-body">
+        <h1 id="前言"   >
+          <a href="#前言" class="heading-link"><i class="fas fa-link"></i></a>前言</h1>
+      <p>本文记录Ubuntu系统下机器学习相关环境的安装和配置</p>
+<!-------------------more------------------>
+
+        <h1 id="安装-CUDA"   >
+          <a href="#安装-CUDA" class="heading-link"><i class="fas fa-link"></i></a>安装 CUDA</h1>
+      <p>首先在这个网站查看tensorflow，cuda，python的版本对应关系，选择合适的版本。<br><span class="exturl"><a class="exturl__link"   target="_blank" rel="noopener" href="https://www.tensorflow.org/install/source#tested_source_configurations" >https://www.tensorflow.org/install/source#tested_source_configurations</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br>本机安装cuda10.0，python版本为3.6，对应tensorflow版本为1.14.0<br>确定后到cuda官网<span class="exturl"><a class="exturl__link"   target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-10.0-download-archive" >https://developer.nvidia.com/cuda-10.0-download-archive</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br>下载cuda10.0的对应run文件，还有一个补丁文件，同样下载。</p>
+
+
+
+
+<p>之后将下载好的文件解压，进入到对应目录后用这个命令运行安装。</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh cuda_10.0.130_410.48_linux.run</span><br></pre></td></tr></table></div></figure>
+<p>注意，运行后有很长的协议要看，回车慢慢向下翻就好。有一步问是否安装显卡驱动，由于之前已经装过，一定选否。<br>对补丁文件同样方法运行即可。</p>
+<p>安装完成后添加环境变量，<br>打开：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit .bashrc</span><br></pre></td></tr></table></div></figure>
+<p>添加如下内容：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export CUDA_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;cuda </span><br><span class="line">export PATH&#x3D;$PATH:$CUDA_HOME&#x2F;bin </span><br><span class="line">export LD_LIBRARY_PATH&#x3D;&#x2F;usr&#x2F;local&#x2F;cuda-10.0&#x2F;lib64$&#123;LD_LIBRARY_PATH:+:$&#123;LD_LIBRARY_PATH&#125;&#125;</span><br></pre></td></tr></table></div></figure>
+<p>保存并退出：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~&#x2F;.bashrc</span><br></pre></td></tr></table></div></figure>
+<p>安装推荐的第三方库：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install g++ freeglut3-dev build-essential libx11-dev libxmu-dev libxi-dev libglu1-mesa libglu1-mesa-dev</span><br></pre></td></tr></table></div></figure>
+
+<p>测试安装是否成功，运行一个cuda的例子：<br>进入example下make,此命令会准备所有例子，大概需要10分钟。</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;cuda&#x2F;samples</span><br><span class="line">sudo make</span><br></pre></td></tr></table></div></figure>
+<p>之后进入一个例子运行下：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;cuda&#x2F;samples&#x2F;1_Utilities&#x2F;deviceQuery </span><br><span class="line">sudo .&#x2F;deviceQuery</span><br></pre></td></tr></table></div></figure>
+
+<p>如果输出result=pass 说明成功。</p>
+
+        <h1 id="安装-CUDNN"   >
+          <a href="#安装-CUDNN" class="heading-link"><i class="fas fa-link"></i></a>安装 CUDNN</h1>
+      <p>在官网下载cuda10.0对应的版本，选择library for Linux，解压文件，将其中的内容复制到CUDA安装文件夹里面。</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo cp cuda&#x2F;include&#x2F;cudnn.h &#x2F;usr&#x2F;local&#x2F;cuda&#x2F;include&#x2F; </span><br><span class="line">sudo cp cuda&#x2F;lib64&#x2F;libcudnn* &#x2F;usr&#x2F;local&#x2F;cuda&#x2F;lib64&#x2F; -d </span><br><span class="line">sudo chmod a+r &#x2F;usr&#x2F;local&#x2F;cuda&#x2F;include&#x2F;cudnn.h </span><br><span class="line">sudo chmod a+r &#x2F;usr&#x2F;local&#x2F;cuda&#x2F;lib64&#x2F;libcudnn*</span><br></pre></td></tr></table></div></figure>
+<p>测试是否成功，查看版本：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat &#x2F;usr&#x2F;local&#x2F;cuda&#x2F;include&#x2F;cudnn.h | grep CUDNN_MAJOR -A 2</span><br></pre></td></tr></table></div></figure>
+<p>如果出现版本信息则成功。</p>
+
+        <h1 id="安装-Anaconda3"   >
+          <a href="#安装-Anaconda3" class="heading-link"><i class="fas fa-link"></i></a>安装 Anaconda3</h1>
+      <p>到官网下载<br><span class="exturl"><a class="exturl__link"   target="_blank" rel="noopener" href="https://www.anaconda.com/distribution/#download-section" >https://www.anaconda.com/distribution/#download-section</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br>到下载的目录下运行：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash Anaconda3-5.1.0-Linux-x86_64.sh</span><br></pre></td></tr></table></div></figure>
+<p>查看是否安装成功：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda --version</span><br></pre></td></tr></table></div></figure>
+
+        <h1 id="安装-TensorFlow"   >
+          <a href="#安装-TensorFlow" class="heading-link"><i class="fas fa-link"></i></a>安装 TensorFlow</h1>
+      <figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">conda create -n tensorflow pip python&#x3D;3.6       &#x2F;&#x2F;创建python3.6对应的Tensorflow环境</span><br><span class="line">source activate tensorflow                      &#x2F;&#x2F;激活tensorflow</span><br><span class="line">pip install tensorflow                          &#x2F;&#x2F;安装tensorflow</span><br></pre></td></tr></table></div></figure>
+<p>测试是否成功：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">source activate tensorflow  &#x2F;&#x2F; 切换到tensorflow环境而非base</span><br><span class="line">pyhton3 &#x2F;&#x2F; 激活pyhton3</span><br><span class="line">import tensorflow as tf &#x2F;&#x2F;运行这句不报错即可</span><br><span class="line">source deactivate &#x2F;&#x2F; 用于取消激活tensorflow环境(这个环境名是自己取的，叫tf更好)</span><br></pre></td></tr></table></div></figure>
+
+
+        <h1 id="安装-Jupyter-Notebook"   >
+          <a href="#安装-Jupyter-Notebook" class="heading-link"><i class="fas fa-link"></i></a>安装 Jupyter Notebook</h1>
+      <p>在需要的conda环境下，安装，不要直接用python3 安装，否则对应环境下仍没有</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyter</span><br></pre></td></tr></table></div></figure>
+<p>之后用</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook</span><br></pre></td></tr></table></div></figure>
+<p>开启<br>一般操作流程为先用anaconda激活tensorflow环境，再打开jupyter notebook， 这样就可以再notebook里用tf了。<br>设定notebook的默认工作路径：<br>输入：</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook --generate-config</span><br></pre></td></tr></table></div></figure>
+<p>在~/home 或者c盘usrs administrators  下找到文件夹  .jupyter 修改jupyter_application_config.py 文件。<br>找到下面这句</p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\# The directory to use for notebooks.</span><br></pre></td></tr></table></div></figure>
+<p>按下面的格式，输入你想要的目录路径即可 </p>
+<figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.notebook_dir &#x3D; &#39;path&#x2F;to&#x2F;your&#x2F;notebooks&#39;</span><br></pre></td></tr></table></div></figure></div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ END ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">Author: </span><span class="copyright-author__value"><a href="http://yoursite.com">John Doe</a></span></div><div class="copyright-link"><span class="copyright-link__name">Link: </span><span class="copyright-link__value"><a href="http://yoursite.com/2019/07/20/%E4%B8%AA%E4%BA%BA%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA2/">http://yoursite.com/2019/07/20/%E4%B8%AA%E4%BA%BA%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA2/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">Copyright: </span><span class="copyright-notice__value">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> unless stating additionally</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://yoursite.com/tags/Linux/">Linux</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://yoursite.com/tags/Machine-Learning/">Machine Learning</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2019/07/21/%E5%88%A9%E7%94%A8frp%E5%AE%9E%E7%8E%B0%E9%9D%9E%E5%B1%80%E5%9F%9F%E7%BD%91%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">利用frp实现非局域网远程连接</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2019/05/26/%E4%B8%AA%E4%BA%BA%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA1/"><span class="paginator-prev__text">个人机器学习平台搭建1</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">Catalog</span><span class="sidebar-nav-ov">Overview</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">
+          前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-CUDA"><span class="toc-number">2.</span> <span class="toc-text">
+          安装 CUDA</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-CUDNN"><span class="toc-number">3.</span> <span class="toc-text">
+          安装 CUDNN</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Anaconda3"><span class="toc-number">4.</span> <span class="toc-text">
+          安装 Anaconda3</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-TensorFlow"><span class="toc-number">5.</span> <span class="toc-text">
+          安装 TensorFlow</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Jupyter-Notebook"><span class="toc-number">6.</span> <span class="toc-text">
+          安装 Jupyter Notebook</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">hello world</p></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">20</div><div class="sidebar-ov-state-item__name">Archives</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="Creative Commons" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">You have read </span><span class="sidebar-reading-info__num">0</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2020</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>John Doe</span></div><div><span>Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a></span><span> v5.1.0</span><span class="footer__devider">|</span><span>Theme - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.1.1</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="/js/utils.js?v=2.1.1"></script><script src="/js/stun-boot.js?v=2.1.1"></script><script src="/js/scroll.js?v=2.1.1"></script><script src="/js/header.js?v=2.1.1"></script><script src="/js/sidebar.js?v=2.1.1"></script></body></html>
