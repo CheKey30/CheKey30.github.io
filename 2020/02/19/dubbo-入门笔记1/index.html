@@ -26,7 +26,8 @@
 <p>分布式架构的难点在于如何进行RPC和如何拆分业务以减少重复。</p>
 <p>无法进行动态调控，由于部署各个业务的服务器个数是一定的，会造成压力大的业务服务器不够，压力小的业务服务器闲置浪费</p>
 <h2 id="流动计算架构-SOA（Service-Oriented-Architecture）"><a href="#流动计算架构-SOA（Service-Oriented-Architecture）" class="headerlink" title="流动计算架构 SOA（Service-Oriented Architecture）"></a>流动计算架构 SOA（Service-Oriented Architecture）</h2><p>引入调度中心，负责维护服务间的复杂关系，实时管理服务集群，给访问量大的业务多分配服务器。并且平衡跑相同业务的服务器上的请求个数。</p>
-<h1 id="RPC（remote-procedure-call）"><a href="#RPC（remote-procedure-call）" class="headerlink" title="RPC（remote procedure call）"></a>RPC（remote procedure call）</h1><p><img src="dubbo1-2.PNG"></p>
+<h1 id="RPC（remote-procedure-call）"><a href="#RPC（remote-procedure-call）" class="headerlink" title="RPC（remote procedure call）"></a>RPC（remote procedure call）</h1><img src="/2020/02/19/dubbo-%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B01/dubbo1-2.PNG" class="" title="RPC原理">
+
 <p>一种进程间的通信方式，是思想而不是规范。（类比JVM是一种思想，各种JVM的实现就是规范）</p>
 <p>A服务器要调用B服务器上的方法，A上的stub通过网络和B建立连接并且传出相关的参数，之后B上的stub接受参数，执行相应的方法，将操作的结果传回给A。通过stub的帮助，表面上调用远程方法和调用本地方法没有差别。</p>
 <p>对于实现这种RPC思想的RPC框架，<strong>通信效率</strong>和<strong>序列化反序列化效率</strong>是两个评判标准。</p>
